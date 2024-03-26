@@ -52,12 +52,16 @@
     background-color: #fff;
     border-radius: 5px;
     color: black;
-    padding: 3mm; /* Ajusta según tus necesidades */
+    padding: 3mm; // Ajustar
 }
 
 .red-text {
     color: #f00;
     font-size: 1.5em
+}
+
+.total-value {
+    font-size: 20px; //Cambia el tamaño de fuente a 20px 
 }
 
 .signo {

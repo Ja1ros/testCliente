@@ -3,7 +3,6 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { ILogin, IResp, User } from "../Models/Interfaces";
 import { AuthService } from "../Services/auth.service";
-import { error } from "console";
 
 @Component({
   selector: "app-login",
@@ -11,6 +10,7 @@ import { error } from "console";
   styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent implements OnInit {
+  loading: boolean = false;
   constructor(
     private router: Router,
     private auth: AuthService,
@@ -97,6 +97,7 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
+    this.loading = true;
     this.auth.Login(this.credenciales).subscribe(
       (data: IResp) => {
         const usuario: User = data.data.user;
@@ -106,7 +107,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('rol',JSON.stringify(usuario.RollName));
         localStorage.setItem('usuario',JSON.stringify(usuario.userName));
         this.router.navigateByUrl('/dashboard');
-        
+        this.loading = false;
       },
       (err) => {
         if (err["error"].errors != undefined) {
@@ -120,7 +121,6 @@ export class LoginComponent implements OnInit {
               msg += element.msg + ", ";
             }
           }
-
           this.showNotification("top", "center", 4, msg);
         } else {
           let er: IResp = err["error"];
@@ -128,7 +128,5 @@ export class LoginComponent implements OnInit {
         }
       }
     );
-
-    
   }
 }

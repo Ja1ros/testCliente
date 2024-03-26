@@ -6,7 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { SidebarModule } from './sidebar/sidebar.module';
 import { FooterModule } from './shared/footer/footer.module';
-import { NavbarModule} from './shared/navbar/navbar.module';
+import { NavbarModule } from './shared/navbar/navbar.module';
 
 
 import { AppComponent } from './app.component';
@@ -54,7 +54,7 @@ registerPlugin(FilePondPluginFileValidateType);
   ],
   imports: [
     BrowserAnimationsModule,
-    RouterModule.forRoot(AppRoutes,{
+    RouterModule.forRoot(AppRoutes, {
       useHash: false
     }),
     DataTablesModule,

@@ -18,22 +18,22 @@ export class CodigoBarrasService {
     const partes = numeroStr.split(".");
     const parteEntera = partes[0];
     const parteDecimal = partes[1] || "";
+
     let nuevoprimerDecimal = 0;
     let nuevoSegundoDecimal = 0;
-    console.log('peso: '+ peso, precio)
-    console.log('multi :'+multi)
+
+    console.log('peso: ' + peso, precio)
+    console.log('multi :' + multi)
     console.log(parteDecimal);
-  //  return "Hola"
 
     if (parteDecimal.length >= 3) {
       const tercerDecimal = parseInt(parteDecimal[2], 10);
-      //   console.log('tercerdecimal',tercerDecimal)
+      const segundoDecimal = parseInt(parteDecimal[1], 10);
+      const primerDecimal = parseInt(parteDecimal[0], 10);
+
       if (tercerDecimal >= 5) {
-        const segundoDecimal = parseInt(parteDecimal[1], 10);
-        //   console.log('2do',segundoDecimal)
+
         const nuevoSegundoDecimal = (segundoDecimal + 1) % 10;
-        //   console.log('2dodecimal',nuevoSegundoDecimal)
-        const primerDecimal = parseInt(parteDecimal[0], 10);
         const nuevoprimerDecimal =
           primerDecimal + (segundoDecimal + 1 >= 10 ? 1 : 0);
 
@@ -42,17 +42,16 @@ export class CodigoBarrasService {
 
           const codigoConUltimoDigito = calcularUltimoDigito(resultado);
           return `26${codigo}000${parteEntera}${nuevoprimerDecimal}${nuevoSegundoDecimal}${codigoConUltimoDigito}`;
-        } else if (parteEnteramulti >= 10) {
+        } else {
           let resultado = `26${codigo}00${tresD}${nuevoSegundoDecimal}`;
           const codigoConUltimoDigito = calcularUltimoDigito(resultado);
           return `26${codigo}00${tresD}${nuevoSegundoDecimal}${codigoConUltimoDigito}`;
         }
       } else {
-        const segundoDecimal = parseInt(parteDecimal[1], 10);
-         console.log('2do2',segundoDecimal)
-
-        const primerDecimal = parseInt(parteDecimal[0], 10);
-         console.log('1er',primerDecimal)
+        nuevoSegundoDecimal = segundoDecimal;
+        nuevoprimerDecimal = primerDecimal;
+        console.log('2do2', segundoDecimal)
+        console.log('1er', primerDecimal)
 
         if (parteEnteramulti < 10) {
           let resultado = `26${codigo}000${parteEntera}${primerDecimal}${segundoDecimal}`;
@@ -66,19 +65,20 @@ export class CodigoBarrasService {
       }
     }
     const codigoConUltimoDigito = calcularUltimoDigito(
-      `26${codigo}00${tresD}${nuevoSegundoDecimal}`
+      `26${codigo}000${tresD}${nuevoSegundoDecimal}`
     );
-    return `26${codigo}00${tresD}${nuevoSegundoDecimal}${codigoConUltimoDigito}`;
+    return `26${codigo}000${tresD}${codigoConUltimoDigito}`;
+    console.log("tresD"+tresD)
   }
 }
 
-function calcularUltimoDigito(codigoBarras: string): number {
+function calcularUltimoDigito(codigoBarras: string): number { 
   // Verificar que el código de barras tenga 12 caracteres
-  if (codigoBarras.length !== 12) {
-    console.log(codigoBarras)
-    throw new Error("El código de barras debe tener 12 caracteres.");
-  }
-
+  // if (codigoBarras.length !== 12) {
+  //   console.log(codigoBarras)
+  //   throw new Error("El código de barras debe tener 12 caracteres.");
+  // }
+  console.log(codigoBarras)
   // Convertir el código de barras en un arreglo de números
   const numeros = codigoBarras.split("").map((char) => parseInt(char, 10));
 
@@ -100,13 +100,10 @@ function calcularUltimoDigito(codigoBarras: string): number {
 
   // Multiplicar por 3 el valor obtenido en la suma de los dígitos impares
   const multiplicadoPorTres = sumaImpares * 3;
-
   // Sumar este valor más la suma de los pares
   const sumaTotal = multiplicadoPorTres + sumaPares;
-
   // Redondear el valor obtenido a la decena inmediatamente superior
   const redondeado = Math.ceil(sumaTotal / 10) * 10;
-
   // Calcular el dígito de control restando la suma total del redondeo
   const digitoControl = redondeado - sumaTotal;
 

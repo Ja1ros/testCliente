@@ -1,15 +1,15 @@
 <div class="container mt-5">
     <div class="row">
-        <div class="col-lg-5 offset-lg-3"> 
+        <div class="col-lg-5 offset-lg-3">
             <div class="card -responsive">
                 <div class="card-body text-center ">
                     <!-- <span class="titulo"> {{ titulo }}</span> -->
                     <div class="mb-3 nombre-input">
                         <input type="text" formControlName="nombre" class="form-control form-control-lg text-center"
                             placeholder="Nombre" [value]="producto.Nombre" readonly>
-                    </div>                   
+                    </div>
                     <form class="mt-3" [formGroup]="productoForm">
-                        <div class="mb-3">                           
+                        <div class="mb-3">
                             <svg id="barcode"></svg>
                         </div>
                         <div class="info-box">
@@ -17,17 +17,18 @@
                                 <div class="white-box">
                                     <p class="red-text">PRECIO/KG</p>
                                     <div class="mb-3">
-                                        <input type="text" formControlName="precio" class="form-control form-control-lg text-center"
-                                            readonly placeholder="Precio">
-                                            <span class="signo">/Kg</span>
+                                        <input type="text" formControlName="precio"
+                                            class="form-control form-control-lg text-center" readonly
+                                            placeholder="Precio">
+                                        <span class="signo">/Kg</span>
                                         <div class="text-danger"
                                             *ngIf="productoForm.get('precio')?.hasError('required') && productoForm.get('precio')?.touched">
                                         </div>
                                     </div>
                                     <div class="mb-3">
-                                        <input type="text" formControlName="peso" class="form-control form-control-lg text-center"
-                                            placeholder="peso">
-                                            <span class="signo">Kg</span>
+                                        <input type="text" formControlName="peso"
+                                            class="form-control form-control-lg text-center" placeholder="peso">
+                                        <span class="signo">Kg</span>
                                         <div class="text-danger"
                                             *ngIf="productoForm.get('peso')?.hasError('required') && productoForm.get('peso')?.touched">
                                             <span>El peso <strong>es obligatorio</strong></span>
@@ -37,15 +38,16 @@
                                 </div>
                                 <div class="white-box">
                                     <p class="red-text">PRECIO NO PAGA IVA</p>
-                                        <span class="signo">$</span>
-                                
+                                    <span class="signo">$</span>
+                                    <span class="total-value">{{total}}</span>
+                                    <p></p>
                                     <p class="red-text">PRECIO TOTAL</p>
                                 </div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <button class="btn btn-info btn float-start mr-2"
-                            (click)="calcularCodigoBarras()">Mostrar</button>
+                                (click)="calcularCodigoBarras()">Mostrar</button>
                             <button routerLink="/generarCBR" class="btn btn-secondary btn float-middle">VOLVER</button>
                             <!-- <button type="submit" [disabled]="productoForm.invalid" class="btn btn-success btn-lg float-end">ACEPTAR</button>  -->
                         </div>

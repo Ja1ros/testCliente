@@ -7,7 +7,6 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Root } from "app/Models/InterfacesProducts";
-import { Producto } from "app/Models/producto";
 import { CodigoBarrasService } from "app/Services/codigo.service";
 import { ProductoService } from "app/Services/producto2.service";
 import { ToastrService } from "ngx-toastr";
@@ -26,7 +25,8 @@ export class EditarProductoComponent implements OnInit {
   id: string | null;
   codigoBarras: string = "";
   codigoBarrasImageUrl: string = "";
-  producto: Root = { };
+  producto: Root = {};
+  total: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -62,6 +62,7 @@ export class EditarProductoComponent implements OnInit {
           peso: data.Peso,
           precio: data.Precio,
         });
+        
       });
     }
   }
@@ -70,7 +71,7 @@ export class EditarProductoComponent implements OnInit {
     let codigo = this.productoForm.get("codigo")?.value;
     codigo = codigo.toString();
     //console.log(codigo, codigo.length)
-    if(codigo.length < 4){
+    if (codigo.length < 4) {
       const i = 4 - codigo.length
       let prefix = "";
       for (let index = 0; index < i; index++) {
@@ -78,16 +79,20 @@ export class EditarProductoComponent implements OnInit {
       }
       codigo = prefix + codigo;
     }
+    const peso = this.productoForm.get("peso")?.value;
+    const precio = this.productoForm.get("precio")?.value;
 
-     const peso = this.productoForm.get("peso")?.value;
-     const precio = this.productoForm.get("precio")?.value;
-    // const precioTotal = peso * precio;
-    // console.log(peso)
-    // console.log(precio)
-    // console.log("precioTotal: "+precioTotal)
-    // this.productoForm.patchValue({
-    //   precioTotal: precioTotal
-    // });
+    let total = this.producto.Precio * peso;
+
+        // Redondear al segundo decimal
+        total = Number(total.toFixed(2));
+        // Verificar si el tercer decimal es mayor a 5
+        const tercerDecimal = total * 1000 % 10;
+        if (tercerDecimal > 5) {
+          // Redondear al segundo decimal también
+          total = Number((total + 0.01).toFixed(2));
+        }
+        this.total = total;
 
     this.cdr.detectChanges();
     this.codigoBarras = this.codigoBarrasService.calcularCodigoBarras(
@@ -97,7 +102,5 @@ export class EditarProductoComponent implements OnInit {
     this.productoForm.patchValue({
       codigoBarras: this.codigoBarras,
     });
-    //console.log("Precio total calculado:", precioTotal);
-    //console.log("Código de barras generado:", this.codigoBarras);
   }
 }

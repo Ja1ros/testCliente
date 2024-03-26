@@ -16,6 +16,7 @@ import { IResp } from "app/Models/Interfaces";
   templateUrl: "./producto.component.html"
 })
 export class ProductoComponent implements OnInit {
+  loading: boolean = false;
   constructor(
     private prodService: ProductoService,
     private toastr: ToastrService,
@@ -182,6 +183,7 @@ export class ProductoComponent implements OnInit {
   }
 
   GuardarProducto() {
+    this.loading = true;
 
     //console.log("Valor actual de this.producto.precio:", this.producto.precio);
     
@@ -202,6 +204,7 @@ export class ProductoComponent implements OnInit {
           
           this.SaveProduct(this.producto);
           this.file = undefined;
+          this.loading = false;
         },
         (err) => {
           console.log(err);
@@ -211,6 +214,7 @@ export class ProductoComponent implements OnInit {
             4,
             "Ocurrio un error al subir la imagen, intente mas tarde "
           );
+          this.loading = false;
         }
       );
     }else{

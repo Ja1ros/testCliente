@@ -16,10 +16,11 @@ import { IResp } from "app/Models/Interfaces";
   templateUrl: "./producto2.component.html"
 })
 export class Producto2Component implements OnInit {
+  loading: boolean = false;
   constructor(
     private prodService: ProductoService,
     private toastr: ToastrService,
-  ) {}
+  ) { }
 
   rol: string = "";
 
@@ -36,7 +37,7 @@ export class Producto2Component implements OnInit {
   };
 
   @ViewChild("closeModalProducto") closeModal: ElementRef;
-  
+
   @ViewChild(DataTableDirective, { static: false })
   dtElement: DataTableDirective;
   dtOptionsP: DataTables.Settings = {};
@@ -54,7 +55,7 @@ export class Producto2Component implements OnInit {
       },
       language: {
         url: "https://cdn.datatables.net/plug-ins/1.13.1/i18n/es-ES.json",
-        
+
         //url: "https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"
       },
       columns: [
@@ -76,7 +77,7 @@ export class Producto2Component implements OnInit {
         {
           title: "Precio",
           data: "Precio",
-          render: $.fn.dataTable.render.number(",", ".", 2,"$"),
+          render: $.fn.dataTable.render.number(",", ".", 2, "$"),
           type: "currency",
         },
         {
@@ -86,7 +87,7 @@ export class Producto2Component implements OnInit {
         {
           title: "Peso",
           data: "Peso",
-          render: $.fn.dataTable.render.number(",", ".", 4),          
+          render: $.fn.dataTable.render.number(",", ".", 4),
         },
         // {
         //   title: "Stock",
@@ -178,22 +179,22 @@ export class Producto2Component implements OnInit {
   GuardarProducto() {
 
     console.log("Valor actual de this.producto.precio:", this.producto.precio);
-    
-     if(!this.validarProducto()){
-      return;
-      }
 
-      
-    if(this.producto.id==0){
+    if (!this.validarProducto()) {
+      return;
+    }
+
+
+    if (this.producto.id == 0) {
       if (!this.file) {
         this.showNotification("top", "center", 4, "Ingrese un archivo ");
         return;
       }
-  
+
       this.prodService.uploadImage(this.file).subscribe(
         (data: RespImgbb) => {
           this.producto.img = data.data.url;
-          
+
           this.SaveProduct(this.producto);
           this.file = undefined;
         },
@@ -207,8 +208,8 @@ export class Producto2Component implements OnInit {
           );
         }
       );
-    }else{
-      if(this.file){
+    } else {
+      if (this.file) {
         this.prodService.uploadImage(this.file).subscribe(
           (data: RespImgbb) => {
             this.producto.img = data.data.url;
@@ -225,7 +226,7 @@ export class Producto2Component implements OnInit {
             );
           }
         );
-      }else{
+      } else {
         this.editarP();
       }
     }
@@ -384,8 +385,8 @@ export class Producto2Component implements OnInit {
         .DataTable()
         .row($(this).parents("tr"))
         .data() as ResponseProduct;
-        console.log(datas)
-     _thisDoc.EditarProducto(datas);
+      console.log(datas)
+      _thisDoc.EditarProducto(datas);
     });
 
     $("#producto-table").on("click", "#EliminarProducto", function (data) {
@@ -411,7 +412,10 @@ export class Producto2Component implements OnInit {
     console.log("Valor actual de producto.precio:", this.producto.precio);
   }
 
-  editarP(){
+  editarP() {
+    console.log("Iniciando edición de producto");
+    this.loading = true;
+
     this.prodService.putProducto(this.producto).subscribe(
       async (data: IRespProduct) => {
         if (data.status == 200) {
@@ -424,13 +428,16 @@ export class Producto2Component implements OnInit {
             stock: 0,
             estado: 1,
             codigo: "",
-          categoria: 0,
+            categoria: 0,
           };
+          this.pondFiles = [];
+          this.myPond.removeFiles();
           await this.reload();
           this.closeModal.nativeElement.click(); //<-- here
-          this.myPond.removeFiles()
           this.showNotification("top", "center", 2, data.msg);
         }
+        this.loading = false;
+        console.log("Edición de producto completada");
       },
       (err) => {
         if (err["error"].errors != undefined) {
@@ -449,6 +456,8 @@ export class Producto2Component implements OnInit {
           let er: IRespProduct = err["error"];
           this.showNotification("top", "center", 4, er.msg);
         }
+        this.loading = false;
+        console.log("Error al editar producto");
       }
     );
   }
@@ -475,7 +484,7 @@ export class Producto2Component implements OnInit {
             stock: 0,
             estado: 1,
             codigo: "",
-          categoria: 0,
+            categoria: 0,
           };
           await this.reload();
           //this.closeModal.nativeElement.click(); //<-- here
